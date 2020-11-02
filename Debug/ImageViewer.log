@@ -1,0 +1,9 @@
+﻿  uic imageviewer.ui
+  rcc imageviewer.qrc
+  moc imageviewer.h
+   RCC: Warning: No resources in 'C:\dev\Cpp\ImageViewer\ImageViewer\imageviewer.qrc'.
+  imageviewer.cpp
+  main.cpp
+  qrc_imageviewer.cpp
+  moc_imageviewer.cpp
+  ImageViewer.vcxproj -> C:\dev\Cpp\ImageViewer\Debug\ImageViewer.exe
