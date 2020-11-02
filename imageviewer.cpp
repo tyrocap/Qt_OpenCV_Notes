@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 #include <QDebug>
 #include "imageviewer.h"
+#include <opencv2/opencv.hpp>
 
 ImageViewer::ImageViewer(QWidget* parent)
     : QMainWindow(parent)
@@ -25,10 +26,12 @@ void ImageViewer::initUI() {
 
     // setup menubar
     fileMenu = menuBar()->addMenu("&File");
+    editMenu = menuBar()->addMenu("&Edit");
     viewMenu = menuBar()->addMenu("&View");
 
     // setup toolbar
     fileToolBar = addToolBar("File");
+    editToolBar = addToolBar("Edit");
     viewToolBar = addToolBar("View");
 
     // main area for the image
@@ -73,6 +76,11 @@ void ImageViewer::createActions() {
     nextAction = new QAction("&Next Image", this);
     viewMenu->addAction(nextAction);
 
+    blurAction = new QAction("Blur", this);
+    editMenu->addAction(blurAction);
+    editToolBar->addAction(blurAction);
+
+
     // add actions to toolbar
     fileToolBar->addAction(openAction);
     viewToolBar->addAction(zoomInAction);
@@ -88,6 +96,7 @@ void ImageViewer::createActions() {
     connect(zoomOutAction, SIGNAL(triggered(bool)), this, SLOT(zoomOut()));
     connect(prevAction, SIGNAL(triggered(bool)), this, SLOT(prevImage()));
     connect(nextAction, SIGNAL(triggered(bool)), this, SLOT(nextImage()));
+    connect(blurAction, SIGNAL(triggered(bool)), this, SLOT(blurImage()));
 
     setupShortcuts();
 }
@@ -198,7 +207,38 @@ void ImageViewer::setupShortcuts() {
     nextAction->setShortcuts(shortcuts);
 }
 
-
+void ImageViewer::blurImage() {
+    if (currentImage == nullptr) {
+        QMessageBox::information(this, "Information", "No image to edit.");
+        return;
+    }
+    QPixmap pixmap = currentImage->pixmap();
+    QImage image = pixmap.toImage();
+    image = image.convertToFormat(QImage::Format_RGB888);
+    cv::Mat mat = cv::Mat(
+        image.height(),
+        image.width(),
+        CV_8UC3,
+        image.bits(),
+        image.bytesPerLine()
+    );
+    cv::Mat tmp;
+    cv::blur(mat, tmp, cv::Size(8, 8));
+    mat = tmp;
+    QImage image_blurred(
+        mat.data,
+        mat.cols,
+        mat.rows,
+        mat.step,
+        QImage::Format_RGB888
+    );
+    pixmap = QPixmap::fromImage(image_blurred);
+    imageScene->clear();
+    imageView->resetMatrix();
+    currentImage = imageScene->addPixmap(pixmap);
+    imageScene->update();
+    imageView->setSceneRect(pixmap.rect());
+}
 
 
 

@@ -1,0 +1,10 @@
+﻿  Reading Qt configuration (C:/Qt/5.15.1/msvc2019/bin/qmake)
+  uic imageviewer.ui
+  rcc imageviewer.qrc
+  moc imageviewer.h
+   RCC: Warning: No resources in 'C:\dev\Cpp\ImageViewer\ImageViewer\imageviewer.qrc'.
+  imageviewer.cpp
+  main.cpp
+  qrc_imageviewer.cpp
+  moc_imageviewer.cpp
+Qt5Widgetsd.lib(Qt5Widgetsd.dll) : fatal error LNK1112: module machine type 'x86' conflicts with target machine type 'x64'
